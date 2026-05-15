@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green:      #22C55E;
+    --green-dark: #16A34A;
+    --green-dim:  #DCFCE7;
+    --green-mid:  #BBF7D0;
+    --bg:         #F9FAFB;
+    --surface:    #FFFFFF;
+    --ink:        #111827;
+    --muted:      #6B7280;
+    --border:     #E5E7EB;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 99;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 56px;
+  }
+  .nav-logo {
+    font-family: var(--mono); font-size: 0.95rem; font-weight: 500;
+    color: var(--ink); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.875rem; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 6rem 2.5rem 4rem;
+    max-width: 900px; margin: 0 auto;
+  }
+  .hero-prompt {
+    font-family: var(--mono); font-size: 0.875rem;
+    color: var(--green-dark); margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hero-prompt::before { content: '>'; font-weight: 500; color: var(--green); }
+  .hero-name {
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 700; line-height: 1.05;
+    letter-spacing: -0.03em; color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+  .hero-name .highlight {
+    color: var(--green-dark);
+    position: relative; display: inline-block;
+  }
+  .hero-name .highlight::after {
+    content: '';
+    position: absolute; bottom: 4px; left: 0; right: 0;
+    height: 6px; background: var(--green-mid);
+    z-index: -1; border-radius: 2px;
+  }
+  .hero-sub {
+    font-size: 1.1rem; color: var(--muted);
+    line-height: 1.7; max-width: 520px;
+    margin-bottom: 2.25rem; font-weight: 400;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+  .pill {
+    font-family: var(--mono); font-size: 0.8rem;
+    padding: 0.3rem 0.85rem; border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted); font-weight: 500;
+  }
+  .pill.active {
+    background: var(--green-dim); border-color: var(--green-mid); color: var(--green-dark);
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green); color: #fff;
+    font-weight: 600; font-size: 0.95rem;
+    padding: 0.7rem 1.5rem; border-radius: 8px;
+    text-decoration: none; width: fit-content;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .hero-cta:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+  /* ── SECTION ── */
+  .section-wrap { max-width: 900px; margin: 0 auto; padding: 4.5rem 2.5rem; }
+  .section-label {
+    font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+    color: var(--green-dark); letter-spacing: 0.06em;
+    text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+  .section-title {
+    font-size: 1.75rem; font-weight: 700;
+    letter-spacing: -0.02em; margin-bottom: 0.5rem;
+  }
+  .section-sub { font-size: 0.95rem; color: var(--muted); margin-bottom: 2rem; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin-bottom: 2rem; }
+
+  /* ── CARDS ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.4rem;
+    transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+    display: flex; flex-direction: column;
+  }
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border-color: var(--green-mid); transform: translateY(-2px);
+  }
+  .card-top {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; margin-bottom: 0.75rem;
+  }
+  .card-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--green-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .card-badge {
+    font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
+    padding: 0.2rem 0.55rem; border-radius: 4px;
+    background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+  }
+  .card h3 {
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 0.4rem; line-height: 1.3; letter-spacing: -0.01em;
+  }
+  .card p {
+    font-size: 0.875rem; color: var(--muted);
+    line-height: 1.6; flex: 1; margin-bottom: 1rem;
+  }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 0.75rem; border-top: 1px solid var(--border);
+  }
+  .card-meta { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+  .card-link {
+    font-size: 0.8rem; font-weight: 600; color: var(--green-dark);
+    text-decoration: none; display: flex; align-items: center; gap: 4px;
+    transition: gap 0.15s;
+  }
+  .card-link:hover { gap: 7px; }
+
+  /* ── SKILLS ── */
+  #skills { background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .skills-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.6rem;
+  }
+  .skill-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 0.875rem; font-weight: 500;
+    transition: border-color 0.15s;
+  }
+  .skill-row:hover { border-color: var(--green-mid); }
+  .skill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+  /* ── ABOUT ── */
+  .about-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2.5rem; align-items: start; }
+  .about-card {
+    background: var(--green-dim); border: 1px solid var(--green-mid);
+    border-radius: 14px; padding: 1.5rem; text-align: center;
+  }
+  .about-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--green-mid); border: 3px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 0.75rem;
+  }
+  .about-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .about-card p { font-size: 0.8rem; color: var(--green-dark); font-weight: 500; }
+  .about-text { font-size: 0.975rem; line-height: 1.75; color: #374151; }
+  .about-text p + p { margin-top: 0.75rem; }
+
+  /* ── CONTACT ── */
+  .contact-box {
+    max-width: 480px; margin: 0 auto;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2.5rem 2rem; text-align: center;
+  }
+  .contact-box p { font-size: 0.95rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.5rem; }
+
+  footer {
+    text-align: center; padding: 2rem; border-top: 1px solid var(--border);
+    font-family: var(--mono); font-size: 0.8rem; color: var(--muted);
+  }
+
+  @media (max-width: 600px) {
+    .about-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 1.25rem; }
+    .nav-links { gap: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="nav-logo">
+    <span class="nav-logo-dot"></span>
+    noelia.dev
+  </a>
+  <ul class="nav-links">
+    <li><a href="#school">School</a></li>
+    <li><a href="#coding">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="https://github.com/noeliacanela229" target="_blank">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <p class="hero-prompt">software engineer, builder, bilingual</p>
+  <h1 class="hero-name">Hi, I'm <span class="highlight">Noelia</span>.</h1>
+  <p class="hero-sub">Recently graduated with a degree in Applied Computer Science. I like building practical things and solving problems that actually matter. Here's a look at my work.</p>
+  <div class="hero-pills">
+    <span class="pill active">Python</span>
+    <span class="pill active">JavaScript</span>
+    <span class="pill active">C / C++</span>
+    <span class="pill active">Flutter</span>
+    <span class="pill active">N8N / Zapier</span>
+    <span class="pill">NAU · Class of 2026</span>
+    <span class="pill">English & Spanish</span>
+  </div>
+  <a href="#coding" class="hero-cta">See my projects →</a>
+</section>
+
+<section id="school" style="background: white; border-top: 1px solid var(--border);">
+  <div class="section-wrap">
+    <p class="section-label">// school</p>
+    <h2 class="section-title">Essays & Coursework</h2>
+    <p class="section-sub">Writing and projects from class that I'm proud of.</p>
+    <hr class="divider">
+    <div class="cards-grid">
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">🧠</div>
+          <span class="card-badge">Research Paper</span>
+        </div>
+        <h3>How Sycophancy Emerges in a Round Table Setting</h3>
+        <p>ACM-format research paper studying whether LLMs exhibit sycophantic behavior when interacting exclusively with other agents — no human input. Used three Llama 3 agents with expert, peer, and novice roles across moral, arithmetic, and scientific questions.</p>
+        <div class="card-footer">
+          <span class="card-meta">CS 499 Capstone · 2026</span>
+          <a href="https://github.com/noeliacanela229/sycophancy-roundtable" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">🚲</div>
+          <span class="card-badge">Flutter · Java · AWS</span>
+        </div>
+        <h3>CRANCStorm — Cyclist Routing App</h3>
+        <p>Year-long senior capstone built for urban planning researcher Dr. Steven Gehrke. Modernized the existing CRANC routing tool with a Flutter mobile app, live GPS tracking, isochrone-based Points of Interest, and user account personalization. Converted OpenStreetMap data to GMNS format for optimized network routing using GraphHopper.</p>
+        <div class="card-footer">
+          <span class="card-meta">Senior Capstone · NAU · 2026</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">📊</div>
+          <span class="card-badge">Python · ML</span>
+        </div>
+        <h3>Music Genre Clustering</h3>
+        <p>Compared six clustering algorithms on 32,000 Spotify songs to see if audio features alone can identify genre — no labels. Includes PCA visualization and silhouette scoring across K-Means, DBSCAN, GMM, and more.</p>
+        <div class="card-footer">
+          <span class="card-meta">CS 472 · 2026</span>
+          <a href="https://github.com/noeliacanela229/music-genre-clustering" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="coding">
+  <div class="section-wrap">
+    <p class="section-label">// projects</p>
+    <h2 class="section-title">Things I've Built</h2>
+    <p class="section-sub">Personal and class projects — some finished, some works in progress.</p>
+    <hr class="divider">
+    <div class="cards-grid">
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">🕹️</div>
+          <span class="card-badge">HTML / JS</span>
+        </div>
+        <h3>Code Collector</h3>
+        <p>A browser-based arcade game where you collect code snippets and dodge bugs. Built and deployed independently using vanilla JavaScript and HTML Canvas.</p>
+        <div class="card-footer">
+          <span class="card-meta">Personal Project</span>
+          <a href="https://codecollectergame.netlify.app/" class="card-link">Play →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">📅</div>
+          <span class="card-badge">Node.js · PostgreSQL</span>
+        </div>
+        <h3>PlanIt — Scheduling App</h3>
+        <p>A full-stack scheduling web app for small service-based businesses like barbers, photographers, and tutors. Clients can self-schedule appointments through a shareable booking calendar, eliminating double-bookings and manual coordination. Deployed on AWS.</p>
+        <div class="card-footer">
+          <span class="card-meta">Node.js · Express · PostgreSQL · EJS</span>
+          <a href="https://github.com/noeliacanela229/planit" class="card-link">GitHub →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">⚙️</div>
+          <span class="card-badge">n8n · AI</span>
+        </div>
+        <h3>Opal — AI Lead Enrichment Pipeline</h3>
+        <p>Automated pipeline that finds leads, verifies emails, scores them with Claude AI, and logs results to Google Sheets. Deployed for real clients including a soccer academy and an investor CRM.</p>
+        <div class="card-footer">
+          <span class="card-meta">Opal Automatons · 2025</span>
+          <a href="https://github.com/noeliacanela229/Opal" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">🐦</div>
+          <span class="card-badge">HTML / JS</span>
+        </div>
+        <h3>Flappy Dupe</h3>
+        <p>A Flappy Bird clone built from scratch using HTML5 Canvas. Implements gravity physics, randomized pipe generation, and collision detection — no libraries, just vanilla JavaScript.</p>
+        <div class="card-footer">
+          <span class="card-meta">Personal Project</span>
+          <a href="https://github.com/noeliacanela229/FlappyBird_GameDupe" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">📖</div>
+          <span class="card-badge">HTML / JS</span>
+        </div>
+        <h3>Choose Your Adventure</h3>
+        <p>A browser-based interactive story game with branching paths and multiple endings. Built with vanilla JavaScript and dynamic DOM manipulation — no frameworks.</p>
+        <div class="card-footer">
+          <span class="card-meta">Personal Project</span>
+          <a href="https://github.com/noeliacanela229/Story_timegame" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">💡</div>
+          <span class="card-badge">HTML / JS</span>
+        </div>
+        <h3>Lights Out</h3>
+        <p>A browser recreation of the classic Lights Out puzzle game. Click a tile to toggle it and its neighbors — solve the board to win. Built with a 5x5 CSS grid and JavaScript logic.</p>
+        <div class="card-footer">
+          <span class="card-meta">Personal Project</span>
+          <a href="https://github.com/noeliacanela229/lightsoutminigame" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">🐍</div>
+          <span class="card-badge">C</span>
+        </div>
+        <h3>Snake and Ladder</h3>
+        <p>A two-player Snake and Ladder game that runs in the terminal. The board renders after every move showing both player positions, with snakes and ladders handled via weighted position offsets.</p>
+        <div class="card-footer">
+          <span class="card-meta">Personal Project</span>
+          <a href="https://github.com/noeliacanela229/Snakes_Ladders_Game" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon">🔤</div>
+          <span class="card-badge">C</span>
+        </div>
+        <h3>Hangman</h3>
+        <p>A terminal Hangman game in C with hint-based word selection, ASCII art that draws step by step, and duplicate guess detection. Six attempts to guess the word before the hangman is complete.</p>
+        <div class="card-footer">
+          <span class="card-meta">Personal Project</span>
+          <a href="https://github.com/noeliacanela229/Hangman_Minigame" class="card-link">GitHub →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="section-wrap">
+    <p class="section-label">// skills</p>
+    <h2 class="section-title">What I Work With</h2>
+    <p class="section-sub">Languages, tools, and other things I've picked up along the way.</p>
+    <hr class="divider">
+    <div class="skills-list">
+      <div class="skill-row"><span class="skill-dot"></span>Python</div>
+      <div class="skill-row"><span class="skill-dot"></span>JavaScript</div>
+      <div class="skill-row"><span class="skill-dot"></span>C / C++</div>
+      <div class="skill-row"><span class="skill-dot"></span>Java</div>
+      <div class="skill-row"><span class="skill-dot"></span>C#</div>
+      <div class="skill-row"><span class="skill-dot"></span>SQL</div>
+      <div class="skill-row"><span class="skill-dot"></span>HTML & CSS</div>
+      <div class="skill-row"><span class="skill-dot"></span>Flutter</div>
+      <div class="skill-row"><span class="skill-dot"></span>Firebase & AWS</div>
+      <div class="skill-row"><span class="skill-dot"></span>RESTful APIs</div>
+      <div class="skill-row"><span class="skill-dot"></span>N8N & Zapier</div>
+      <div class="skill-row"><span class="skill-dot"></span>GitHub & CLI</div>
+      <div class="skill-row"><span class="skill-dot"></span>Ubuntu Linux</div>
+      <div class="skill-row"><span class="skill-dot"></span>QA / QC</div>
+      <div class="skill-row"><span class="skill-dot"></span>Technical Documentation</div>
+      <div class="skill-row"><span class="skill-dot"></span>Bilingual (EN / ES)</div>
+    </div>
+  </div>
+</section>
+
+<section id="about" style="background: white; border-top: 1px solid var(--border);">
+  <div class="section-wrap">
+    <p class="section-label">// about</p>
+    <h2 class="section-title">A Bit About Me</h2>
+    <hr class="divider">
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="about-avatar">🧑‍💻</div>
+        <h3>Noelia Sandoval Canela</h3>
+        <p>Applied CS · NAU · Class of 2026</p>
+      </div>
+      <div class="about-text">
+        <p>I'm an aspiring software engiineer based in Arizona with a background in mobile and web development, workflow automation, and secure software design. I recently graduated from Northern Arizona University with a B.S. in Applied Computer Science.</p>
+        <p>My experience includes a VW Group internship digitizing legacy systems, building a full-stack cyclist routing app for a real sponsor, and deploying automation workflows at a startup. I'm drawn to work that sits at the intersection of engineering and real-world impact.</p>
+        <p>I'm bilingual in English and Spanish, and I care about building things that are actually useful to real people.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-wrap">
+    <p class="section-label" style="text-align:center;">// contact</p>
+    <h2 class="section-title" style="text-align:center;">Get In Touch with me!</h2>
+    <br>
+    <div class="contact-box">
+      <p>Whether it's about a project, a collaboration, or just to say hi, feel free to reach out!</p>
+      <p style="font-family: var(--mono); font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem;">noeliasandoval9512@gmail.com</p>
+      <a href="https://mail.google.com/mail/?view=cm&to=noeliasandoval9512@gmail.com" target="_blank" class="hero-cta" style="margin: 0 auto;">✉️ Email me</a>
+    </div>
+  </div>
+</section>
+
+<footer>built by noelia sandoval canela · 2026</footer>
+
+<a href="#hero" id="back-to-top" aria-label="Back to top">↑</a>
+
+<style>
+#back-to-top {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  width: 40px; height: 40px;
+  background: var(--green); color: white;
+  border-radius: 50%; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 1.1rem; text-decoration: none;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  font-weight: 700; z-index: 99;
+}
+#back-to-top.visible { opacity: 1; pointer-events: all; }
+#back-to-top:hover { transform: translateY(-2px); }
+.nav-links a.active { color: var(--ink); }
+</style>
+
+<script>
+const btn = document.getElementById('back-to-top');
+window.addEventListener('scroll', () => {
+  btn.classList.toggle('visible', window.scrollY > 400);
+
+  const sections = ['hero','school','coding','skills','about','contact'];
+  const navLinks = document.querySelectorAll('.nav-links a');
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 80) current = id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+
+</body>
+</html>
